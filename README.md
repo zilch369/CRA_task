@@ -6,4 +6,4 @@
 |D4|X|
 |D5|O|
 
-<img width="1727" height="528" alt="image" src="https://github.com/user-attachments/assets/af4d6985-ae9c-47d6-9ed0-b74f14955f26" />
+<img width="1730" height="513" alt="image" src="https://github.com/user-attachments/assets/c1f2d301-c1cc-40c3-b18a-4e3a5472a8f7" />
