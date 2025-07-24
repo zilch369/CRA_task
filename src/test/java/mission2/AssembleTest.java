@@ -104,6 +104,16 @@ class AssembleTest {
     }
 
     @Test
+    void testGoBackStep() {
+        int step = 2; // 예: 엔진 선택 단계
+        int answer = 0; // goBackStep
+        if (answer == Assemble.goBackStep) {
+            step = Assemble.setStep(step);
+        }
+        assertEquals(1, step); // 이전 단계로 이동했는지 확인
+    }
+
+    @Test
     void testIsValidMenu() {
         assertEquals(-1, assemble.isValidMenu(0, "abc"));
         assertEquals(-1, assemble.isValidMenu(0, "5"));

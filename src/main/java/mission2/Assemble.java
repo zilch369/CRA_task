@@ -17,7 +17,7 @@ public class Assemble {
     private static final int BOSCH_S = 1, MOBIS = 2;
 
     private static int[] carInfo = new int[5];
-    private static final int goBackStep = 0;
+    static final int goBackStep = 0;
 
     private static String[] carTypes = {"", "Sedan", "SUV", "Truck"};
     static final List<PartMenu> partMenus = List.of(
@@ -30,26 +30,26 @@ public class Assemble {
         runtest = run_Test;
     }
 
+    public static Assemble getInstance() {
+        return new Assemble();
+    }
 
     public static void main(String[] args) {
+        Assemble.getInstance().run();
+    }
+
+    public void run() {
         Scanner sc = new Scanner(System.in);
         int step = CarType_Q;
-        setRun_Test(partMenus.size()+1);
-
+        runtest = partMenus.size() + 1;
         while (true) {
             System.out.print(CLEAR_SCREEN);
             System.out.flush();
-
             String buf = selectMenu(step, sc);
             if (buf == null) break;
-
             int answer = isValidMenu(step, buf);
             if (answer == -1) continue;
-            if (answer == goBackStep) {
-                step = setStep(step);
-                continue;
-            }
-
+            if (answer == 0) { step = setStep(step); continue; }
             step = selectItem(step, answer);
         }
         sc.close();
