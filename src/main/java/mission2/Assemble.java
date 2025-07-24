@@ -1,4 +1,4 @@
-package mission1;
+package mission2;
 
 import java.util.Scanner;
 
@@ -19,6 +19,8 @@ public class Assemble {
     private static int[] carInfo = new int[5];
 
     private static final int goBackStep = 0;
+
+
     private static String[] carTypes = {"", "Sedan", "SUV", "Truck"};
     private static String[] engineFactory = {"", "GM", "TOYOTA", "WIA"};
     private static String[] brakeFactory = {"", "MANDO", "CONTINENTAL", "BOSCH"};
@@ -47,7 +49,7 @@ public class Assemble {
         sc.close();
     }
 
-    private static String selectMenu(int step, Scanner sc) {
+    public static String selectMenu(int step, Scanner sc) {
         showMenu(step);
         String buf = sc.nextLine().trim();
 
@@ -57,7 +59,7 @@ public class Assemble {
         }
         return buf;
     }
-    private static int isValidMenu(int step, String buf) {
+    public static int isValidMenu(int step, String buf) {
         int answer = -1;
         try {
             answer = Integer.parseInt(buf);
@@ -72,7 +74,7 @@ public class Assemble {
         }
         return answer;
     }
-    private static void showMenu(int step) {
+    public static void showMenu(int step) {
         switch (step) {
             case CarType_Q:
                 showCarTypeMenu(); break;
@@ -87,7 +89,7 @@ public class Assemble {
         }
         System.out.print("INPUT > ");
     }
-    private static int setStep(int step) {
+    public static int setStep(int step) {
         if (step == Run_Test) {
             step = CarType_Q;
         } else if (step > CarType_Q) {
@@ -95,7 +97,7 @@ public class Assemble {
         }
         return step;
     }
-    private static int selectItem(int step, int answer) {
+    public static int selectItem(int step, int answer) {
         switch (step) {
             case CarType_Q:
                 selectCarType(answer);
@@ -132,7 +134,7 @@ public class Assemble {
         return step;
     }
 
-    private static void showCarTypeMenu() {
+    public static void showCarTypeMenu() {
         System.out.println("        ______________");
         System.out.println("       /|            |");
         System.out.println("  ____/_|_____________|____");
@@ -145,7 +147,7 @@ public class Assemble {
         }
         System.out.println("===============================");
     }
-    private static void showEngineMenu() {
+    public static void showEngineMenu() {
         System.out.println("what engine?");
         System.out.println("0. go back");
         for (int i = 1; i < engineFactory.length; i++) {
@@ -153,7 +155,7 @@ public class Assemble {
         }
         System.out.println("===============================");
     }
-    private static void showBrakeMenu() {
+    public static void showBrakeMenu() {
         System.out.println("what brake?");
         System.out.println("0. go back");
         for (int i = 1; i < brakeFactory.length; i++) {
@@ -161,7 +163,7 @@ public class Assemble {
         }
         System.out.println("===============================");
     }
-    private static void showSteeringMenu() {
+    public static void showSteeringMenu() {
         System.out.println("what steering?");
         System.out.println("0. go back");
         for (int i = 1; i < steeringFactory.length; i++) {
@@ -169,8 +171,8 @@ public class Assemble {
         }
         System.out.println("===============================");
     }
-    private static void showRunTestMenu() {
-        System.out.println("car is produced.");
+    public static void showRunTestMenu() {
+        System.out.println("good car is produced.");
         System.out.println("what next job?");
         System.out.println("0. go home");
         System.out.println("1. RUN");
@@ -178,7 +180,7 @@ public class Assemble {
         System.out.println("===============================");
     }
 
-    private static boolean isValidRange(int step, int ans) {
+    public static boolean isValidRange(int step, int ans) {
         switch (step) {
             case CarType_Q:
                 if (ans < 1 || ans > 3) {
@@ -214,27 +216,27 @@ public class Assemble {
         return true;
     }
 
-    private static void selectCarType(int a) {
+    public static void selectCarType(int a) {
         carInfo[CarType_Q] = a;
         String name = (a >= 1 && a <= carTypes.length - 1) ? carTypes[a] : "no type";
         System.out.printf("cartype %s choice.\n", name);
     }
-    private static void selectEngine(int a) {
+    public static void selectEngine(int a) {
         carInfo[Engine_Q] = a;
         String name = (a >= 1 && a <= engineFactory.length - 1) ? engineFactory[a] : "brake engine";
         System.out.printf("%s engine choice.\n", name);
     }
-    private static void selectBrakeSystem(int a) {
+    public static void selectBrakeSystem(int a) {
         carInfo[BrakeSystem_Q] = a;
         String name = (a >= 1 && a <= brakeFactory.length - 1) ? brakeFactory[a] : "no factory";
         System.out.printf("%s brake choice.\n", name);
     }
-    private static void selectSteeringSystem(int a) {
+    public static void selectSteeringSystem(int a) {
         carInfo[SteeringSystem_Q] = a;
         String name =(a >= 1 && a <= steeringFactory.length - 1) ? steeringFactory[a] : "no factory";
         System.out.printf("%s steering choice.\n", name);
     }
-    private static boolean isValidRunCheck() {
+    public static boolean isValidRunCheck() {
         if (isValidSedan()) return false;
         if (isValidSuv())       return false;
         if (isValidTruckEngine())          return false;
@@ -243,23 +245,23 @@ public class Assemble {
         return true;
     }
 
-    private static boolean isValidBosch() {
+    public static boolean isValidBosch() {
         return carInfo[BrakeSystem_Q] == BOSCH_B && carInfo[SteeringSystem_Q] != BOSCH_S;
     }
-    private static boolean isValidTruckBrake() {
+    public static boolean isValidTruckBrake() {
         return carInfo[CarType_Q] == TRUCK && carInfo[BrakeSystem_Q] == MANDO;
     }
-    private static boolean isValidTruckEngine() {
+    public static boolean isValidTruckEngine() {
         return carInfo[CarType_Q] == TRUCK && carInfo[Engine_Q] == WIA;
     }
-    private static boolean isValidSuv() {
+    public static boolean isValidSuv() {
         return carInfo[CarType_Q] == SUV && carInfo[Engine_Q] == TOYOTA;
     }
-    private static boolean isValidSedan() {
+    public static boolean isValidSedan() {
         return carInfo[CarType_Q] == SEDAN && carInfo[BrakeSystem_Q] == CONTINENTAL;
     }
 
-    private static void runProducedCar() {
+    public static void runProducedCar() {
         if (!isValidRunCheck()) {
             System.out.println("car is not work");
             return;
@@ -277,7 +279,7 @@ public class Assemble {
         System.out.println("car is work.");
     }
 
-    private static void testProducedCar() {
+    public static void testProducedCar() {
         if (isValidSedan()) {
             fail("Sedan - Continental brake not avaliable");
         } else if (isValidSuv()) {
@@ -292,11 +294,11 @@ public class Assemble {
             System.out.println("car assemble test : PASS");
         }
     }
-    private static void fail(String msg) {
+    public static void fail(String msg) {
         System.out.println("car assemble test : FAIL");
         System.out.println(msg);
     }
-    private static void delay(int ms) {
+    public static void delay(int ms) {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException ignored) {}
