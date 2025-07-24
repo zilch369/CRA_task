@@ -1,15 +1,15 @@
 package mission2;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Assemble {
     private static final String CLEAR_SCREEN = "\033[H\033[2J";
 
     private static final int CarType_Q      = 0;
-    private static final int Engine_Q       = 1;
-    private static final int BrakeSystem_Q  = 2;
-    private static final int SteeringSystem_Q = 3;
-    private static final int Run_Test       = 4;
+    private static int runtest;
 
     private static final int SEDAN = 1, SUV = 2, TRUCK = 3;
     private static final int GM = 1, TOYOTA = 2, WIA = 3;
@@ -17,18 +17,24 @@ public class Assemble {
     private static final int BOSCH_S = 1, MOBIS = 2;
 
     private static int[] carInfo = new int[5];
-
     private static final int goBackStep = 0;
 
-
     private static String[] carTypes = {"", "Sedan", "SUV", "Truck"};
-    private static String[] engineFactory = {"", "GM", "TOYOTA", "WIA"};
-    private static String[] brakeFactory = {"", "MANDO", "CONTINENTAL", "BOSCH"};
-    private static String[] steeringFactory = {"", "BOSCH", "MOBIS"};
+    static final List<PartMenu> partMenus = List.of(
+            new PartMenu("engine", new String[]{"", "GM", "TOYOTA", "WIA"}),
+            new PartMenu("brake", new String[]{"", "MANDO", "CONTINENTAL", "BOSCH"}),
+            new PartMenu("steering", new String[]{"", "BOSCH", "MOBIS"})
+    );
+
+    public static void setRun_Test(int run_Test) {
+        runtest = run_Test;
+    }
+
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int step = CarType_Q;
+        setRun_Test(partMenus.size()+1);
 
         while (true) {
             System.out.print(CLEAR_SCREEN);
@@ -75,22 +81,18 @@ public class Assemble {
         return answer;
     }
     public static void showMenu(int step) {
-        switch (step) {
-            case CarType_Q:
-                showCarTypeMenu(); break;
-            case Engine_Q:
-                showEngineMenu(); break;
-            case BrakeSystem_Q:
-                showBrakeMenu(); break;
-            case SteeringSystem_Q:
-                showSteeringMenu(); break;
-            case Run_Test:
-                showRunTestMenu(); break;
+        if (step == CarType_Q) {
+            showCarTypeMenu();
+        } else if (step >= 1 && step <= partMenus.size()) {
+            int partIndex = step - 1;
+            partMenus.get(partIndex).show();
+        } else if (step == runtest) {
+            showRunTestMenu();
         }
         System.out.print("INPUT > ");
     }
     public static int setStep(int step) {
-        if (step == Run_Test) {
+        if (step == runtest) {
             step = CarType_Q;
         } else if (step > CarType_Q) {
             step--;
@@ -98,38 +100,26 @@ public class Assemble {
         return step;
     }
     public static int selectItem(int step, int answer) {
-        switch (step) {
-            case CarType_Q:
-                selectCarType(answer);
-                delay(800);
-                step = Engine_Q;
-                break;
-            case Engine_Q:
-                selectEngine(answer);
-                delay(800);
-                step = BrakeSystem_Q;
-                break;
-            case BrakeSystem_Q:
-                selectBrakeSystem(answer);
-                delay(800);
-                step = SteeringSystem_Q;
-                break;
-            case SteeringSystem_Q:
-                selectSteeringSystem(answer);
-                delay(800);
-                step = Run_Test;
-                break;
-            case Run_Test:
-                if (answer == 1) {
-                    runProducedCar();
-                    delay(2000);
-                } else if (answer == 2) {
-                    System.out.println("Test...");
-                    delay(1500);
-                    testProducedCar();
-                    delay(2000);
-                }
-                break;
+
+        if (step == runtest) {
+            if (answer == 1) {
+                runProducedCar();
+                delay(2000);
+            } else if (answer == 2) {
+                System.out.println("Test...");
+                delay(1500);
+                testProducedCar();
+                delay(2000);
+            }
+
+        } else if (step == CarType_Q) {
+            selectCarType(answer);
+            delay(800);
+            step++;
+        } else {
+            selectPart(step,answer);
+            delay(800);
+            step++;
         }
         return step;
     }
@@ -147,30 +137,6 @@ public class Assemble {
         }
         System.out.println("===============================");
     }
-    public static void showEngineMenu() {
-        System.out.println("what engine?");
-        System.out.println("0. go back");
-        for (int i = 1; i < engineFactory.length; i++) {
-            System.out.printf("%d. %s\n", i, engineFactory[i]);
-        }
-        System.out.println("===============================");
-    }
-    public static void showBrakeMenu() {
-        System.out.println("what brake?");
-        System.out.println("0. go back");
-        for (int i = 1; i < brakeFactory.length; i++) {
-            System.out.printf("%d. %s\n", i, brakeFactory[i]);
-        }
-        System.out.println("===============================");
-    }
-    public static void showSteeringMenu() {
-        System.out.println("what steering?");
-        System.out.println("0. go back");
-        for (int i = 1; i < steeringFactory.length; i++) {
-            System.out.printf("%d. %s\n", i, steeringFactory[i]);
-        }
-        System.out.println("===============================");
-    }
     public static void showRunTestMenu() {
         System.out.println("good car is produced.");
         System.out.println("what next job?");
@@ -181,37 +147,23 @@ public class Assemble {
     }
 
     public static boolean isValidRange(int step, int ans) {
-        switch (step) {
-            case CarType_Q:
-                if (ans < 1 || ans > 3) {
-                    System.out.println("ERROR :: car type has range 1 ~ 3");
-                    return false;
-                }
-                break;
-            case Engine_Q:
-                if (ans < 0 || ans > 4) {
-                    System.out.println("ERROR :: engine range 1 ~ 4");
-                    return false;
-                }
-                break;
-            case BrakeSystem_Q:
-                if (ans < 0 || ans > 3) {
-                    System.out.println("ERROR :: brake range 1 ~ 3 ");
-                    return false;
-                }
-                break;
-            case SteeringSystem_Q:
-                if (ans < 0 || ans > 2) {
-                    System.out.println("ERROR :: steering range 1 ~ 2");
-                    return false;
-                }
-                break;
-            case Run_Test:
-                if (ans < 0 || ans > 2) {
-                    System.out.println("ERROR :: Run or Test choice");
-                    return false;
-                }
-                break;
+        if (step == CarType_Q) {
+            if (ans < 1 || ans > 3) {
+                System.out.println("ERROR :: car type has range 1 ~ 3");
+                return false;
+            }
+        }
+        if (step >= 1 && step <= partMenus.size()) {
+            if (ans < 0 || ans > partMenus.get(step - 1).options.length-1) {
+                System.out.printf("ERROR :: %s range 1 ~ %d\n", partMenus.get(step - 1).name, partMenus.get(step - 1).options.length -1);
+                return false;
+            }
+        }
+        if (step == runtest) {
+            if (ans < 0 || ans > 2) {
+                System.out.println("ERROR :: Run or Test choice");
+                return false;
+            }
         }
         return true;
     }
@@ -221,21 +173,12 @@ public class Assemble {
         String name = (a >= 1 && a <= carTypes.length - 1) ? carTypes[a] : "no type";
         System.out.printf("cartype %s choice.\n", name);
     }
-    public static void selectEngine(int a) {
-        carInfo[Engine_Q] = a;
-        String name = (a >= 1 && a <= engineFactory.length - 1) ? engineFactory[a] : "brake engine";
-        System.out.printf("%s engine choice.\n", name);
+    public static void selectPart(int partIndex, int a) {
+        carInfo[partIndex] = a;
+        String optionName = (a >= 1 && a <= partMenus.get(partIndex-1).options.length - 1) ? partMenus.get(partIndex-1).options[a] : "break part";
+        System.out.printf("%s %s choice.\n", optionName, partMenus.get(partIndex-1).name);
     }
-    public static void selectBrakeSystem(int a) {
-        carInfo[BrakeSystem_Q] = a;
-        String name = (a >= 1 && a <= brakeFactory.length - 1) ? brakeFactory[a] : "no factory";
-        System.out.printf("%s brake choice.\n", name);
-    }
-    public static void selectSteeringSystem(int a) {
-        carInfo[SteeringSystem_Q] = a;
-        String name =(a >= 1 && a <= steeringFactory.length - 1) ? steeringFactory[a] : "no factory";
-        System.out.printf("%s steering choice.\n", name);
-    }
+
     public static boolean isValidRunCheck() {
         if (isValidSedan()) return false;
         if (isValidSuv())       return false;
@@ -246,19 +189,19 @@ public class Assemble {
     }
 
     public static boolean isValidBosch() {
-        return carInfo[BrakeSystem_Q] == BOSCH_B && carInfo[SteeringSystem_Q] != BOSCH_S;
+        return carInfo[2] == BOSCH_B && carInfo[3] != BOSCH_S;
     }
     public static boolean isValidTruckBrake() {
-        return carInfo[CarType_Q] == TRUCK && carInfo[BrakeSystem_Q] == MANDO;
+        return carInfo[CarType_Q] == TRUCK && carInfo[2] == MANDO;
     }
     public static boolean isValidTruckEngine() {
-        return carInfo[CarType_Q] == TRUCK && carInfo[Engine_Q] == WIA;
+        return carInfo[CarType_Q] == TRUCK && carInfo[1] == WIA;
     }
     public static boolean isValidSuv() {
-        return carInfo[CarType_Q] == SUV && carInfo[Engine_Q] == TOYOTA;
+        return carInfo[CarType_Q] == SUV && carInfo[1] == TOYOTA;
     }
     public static boolean isValidSedan() {
-        return carInfo[CarType_Q] == SEDAN && carInfo[BrakeSystem_Q] == CONTINENTAL;
+        return carInfo[CarType_Q] == SEDAN && carInfo[2] == CONTINENTAL;
     }
 
     public static void runProducedCar() {
@@ -266,16 +209,19 @@ public class Assemble {
             System.out.println("car is not work");
             return;
         }
-        if (carInfo[Engine_Q] == 4) {
+        if (carInfo[1] == 4) {
             System.out.println("engine is not work.");
             System.out.println("car is not work.");
             return;
         }
 
         System.out.printf("Car Type : %s\n", carTypes[carInfo[CarType_Q]]);
-        System.out.printf("Engine   : %s\n", engineFactory[carInfo[Engine_Q]]);
-        System.out.printf("Brake    : %s\n", brakeFactory[carInfo[BrakeSystem_Q]]);
-        System.out.printf("Steering : %s\n", steeringFactory[carInfo[SteeringSystem_Q]]);
+        for (int i = 0; i < partMenus.size(); i++) {
+            System.out.printf("%s   : %s\n", partMenus.get(i).name, partMenus.get(i).options[carInfo[i + 1]]);
+        }
+//        System.out.printf("%s   : %s\n", partMenus.get(0).name, partMenus.get(0).options[carInfo[Engine_Q]]);
+//        System.out.printf("Brake    : %s\n", brakeFactory[carInfo[BrakeSystem_Q]]);
+//        System.out.printf("Steering : %s\n", steeringFactory[carInfo[SteeringSystem_Q]]);
         System.out.println("car is work.");
     }
 
@@ -302,5 +248,24 @@ public class Assemble {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException ignored) {}
+    }
+}
+
+class PartMenu {
+    final String name;
+    final String[] options;
+
+    public PartMenu(String name, String[] options) {
+        this.name = name;
+        this.options = options;
+    }
+
+    public void show() {
+        System.out.printf("what %s?\n", name);
+        System.out.println("0. go back");
+        for (int i = 1; i < options.length; i++) {
+            System.out.printf("%d. %s\n", i, options[i]);
+        }
+        System.out.println("===============================");
     }
 }

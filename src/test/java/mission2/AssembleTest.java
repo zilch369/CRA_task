@@ -56,33 +56,38 @@ class AssembleTest {
 
     @Test
     void testSelectEngine() {
-        assemble.selectEngine(2);
+        assemble.selectPart(1, 2);
         assertTrue(outContent.toString().contains("TOYOTA"));
         outContent.reset();
-        assemble.selectEngine(99);
-        assertTrue(outContent.toString().contains("brake engine"));
+        assemble.selectPart(1, 99);
+        assertTrue(outContent.toString().contains("break part"));
     }
 
     @Test
     void testSelectBrakeSystem() {
-        assemble.selectBrakeSystem(3);
+//        assemble.selectBrakeSystem(3);
+        assemble.selectPart(2, 3);
         assertTrue(outContent.toString().contains("BOSCH"));
         outContent.reset();
-        assemble.selectBrakeSystem(99);
-        assertTrue(outContent.toString().contains("no factory"));
+//        assemble.selectBrakeSystem(99);
+        assemble.selectPart(2, 99);
+        assertTrue(outContent.toString().contains("break part"));
     }
 
     @Test
     void testSelectSteeringSystem() {
-        assemble.selectSteeringSystem(2);
+//        assemble.selectSteeringSystem(2);
+        assemble.selectPart(3, 2);
         assertTrue(outContent.toString().contains("MOBIS"));
         outContent.reset();
-        assemble.selectSteeringSystem(99);
-        assertTrue(outContent.toString().contains("no factory"));
+//        assemble.selectSteeringSystem(99);
+        assemble.selectPart(3, 99);
+        assertTrue(outContent.toString().contains("break part"));
     }
 
     @Test
     void testIsValidRange() {
+        assemble.setRun_Test(4);
         assertFalse(assemble.isValidRange(0, 0));
         assertFalse(assemble.isValidRange(1, 5));
         assertFalse(assemble.isValidRange(2, 4));
@@ -127,13 +132,13 @@ class AssembleTest {
         assemble.showCarTypeMenu();
         assertTrue(outContent.toString().contains("what car type?"));
         outContent.reset();
-        assemble.showEngineMenu();
+        assemble.partMenus.get(0).show();;
         assertTrue(outContent.toString().contains("what engine?"));
         outContent.reset();
-        assemble.showBrakeMenu();
+        assemble.partMenus.get(1).show();
         assertTrue(outContent.toString().contains("what brake?"));
         outContent.reset();
-        assemble.showSteeringMenu();
+        assemble.partMenus.get(2).show();
         assertTrue(outContent.toString().contains("what steering?"));
         outContent.reset();
         assemble.showRunTestMenu();
